@@ -45,22 +45,22 @@ async function checkPermission(to,from,next) {
 }
 
 router.beforeEach((to, from, next) => {
-
-    if (to.path !== '/login' && !store.state.user.token) {
-        if (to.path === '/register') {
-            next()
-        } else {
-            if(to.path === '/forbiddenAu'||to.path === '/homepage'){
-                next()
-            }else{
-                next('/login');
-            }
-        }
-    } else if (noPermissionPages.includes(to.name)) {
-        next()
-    } else {
-        checkPermission(to,from,next)
-    }
+    next()
+    // if (to.path !== '/login' && !store.state.user.token) {
+    //     if (to.path === '/register') {
+    //         next()
+    //     } else {
+    //         if(to.path === '/forbiddenAu'||to.path === '/homepage'){
+    //             next()
+    //         }else{
+    //             next('');
+    //         }
+    //     }
+    // } else if (noPermissionPages.includes(to.name)) {
+    //     next()
+    // } else {
+    //     checkPermission(to,from,next)
+    // }
 });
 
 Vue.use(Router)

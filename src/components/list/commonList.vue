@@ -549,7 +549,7 @@
 <script>
     import Bus from 'components/eventBus/eventBus'
     import moment from 'moment'
-    import smartCitySelector from "@/components/comboSelector/smartCitySelector"
+    // import smartCitySelector from "@/components/comboSelector/smartCitySelector"
     import {mapMutations, mapState,mapGetters} from 'vuex'
 
     export default {
@@ -597,7 +597,7 @@
             }
         },
         components:{
-            smartCitySelector
+            // smartCitySelector
         },
         props: {
             schema: {

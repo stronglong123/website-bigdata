@@ -362,6 +362,7 @@
     import QRCode from 'qrcodejs2'
     import menuGroups from './routerGroup'
     import theme from '../assets/css/theme.js'
+    import {menu} from '../mock/menu.js'
     // import changePassword from './setting/changePassword'
 
 
@@ -393,7 +394,7 @@
         name: "homepage",
         data() {
             return {
-                roleList: [],
+                roleList: menu,
                 editableTabsValue: "1空页面",
                 editableTabs: [
                     {

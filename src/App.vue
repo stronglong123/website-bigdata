@@ -11,14 +11,13 @@
     import zh_CN from "ant-design-vue/lib/locale-provider/zh_CN";
     import moment from "moment";
     import "moment/locale/zh-cn";
-    import HelloWorld from './pages/HelloWorld.vue'
+    // import HelloWorld from './pages/HelloWorld.vue'
     import {mapState} from "vuex";
 
     moment.locale("zh-cn");
     export default {
         name: 'App',
         components: {
-            HelloWorld
         },
         data() {
             return {

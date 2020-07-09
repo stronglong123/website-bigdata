@@ -1,3 +1,5 @@
+import helloRouter from '../test/helloRouter'
+import tableRouter from "../tableManager/tableRouter";
 
 const home = () => import('pages/homepage')
 
@@ -11,6 +13,8 @@ const homeRouter = [
         title: '首页',
         component: home,
         children:[
+            ...helloRouter,
+            ...tableRouter,
         ]
     },
 ]
