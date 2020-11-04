@@ -2,7 +2,6 @@
     <div>
         <common-list :schema="schema" :tableData="datas" :total="total" :pageName="pageName" @search="doSearch" @rowAction="doAction">
             <template v-slot:leftActions="slotProps">
-<!--                <el-button type="primary" icon="el-icon-plus" size="medium" @click="addOwnerList">添加</el-button>-->
                 <el-button type="primary" size="medium" icon="el-icon-plus" @click="create">新建</el-button>
                 <file-uploader  text="批量导入" :action="uploadAction" @complete="uploadFile"></file-uploader>
             </template>
@@ -10,34 +9,15 @@
                 <el-link  type="primary" icon="el-icon-download" href="/supplyChain/templates/downloadOwner">下载导入模板</el-link>
             </template>
         </common-list>
-        <a-modal
-                :title="title"
-                :visible="visible"
-                :footer="null"
-                @cancel="visible = false"
-                :maskClosable="false"
-                :destroyOnClose="true"
-        >
-            <simple-form
-                    :formSchema="formSchema"
-                    :formType="formType"
-                    :formData="formData"
-                    @close="handleClose"
-                    @submit="handleSubmit"
-                    @edit="editForm"
-            ></simple-form>
-        </a-modal>
     </div>
 </template>
 
 <script>
     import commonList from 'components/list/commonList'
-    import simpleForm from 'components/forms/simpleForm'
     import schema from './listSchema'
     import Bus from 'components/eventBus/eventBus'
     import formSchema from './formSchema'
-    // import {listOwners,addOwner,getOwnerById,checkOwnerCode,changeStatus} from 'api/ownerApi'
-    const uploadOwners = '/supplyChain/productOwner/upload'
+    const uploadTables = '/aipservice/import/importTable'
 
     export default {
         name: "tableList",
@@ -51,25 +31,19 @@
                 title:'添加表',
                 formType:'create',
                 formData:{},
-                uploadAction:uploadOwners,
-                pageName: 'owner-list',
+                uploadAction:uploadTables,
+                pageName: 'table-list',
             }
         },
         components:{
             commonList,
-            simpleForm
         },
         mounted() {
-            this.initUploadAction();
             this.doSearch({pageNum:1,pageSize:20});
         },
         methods: {
             create() {
                 this.$router.push({name:'tableAdd'})
-            },
-            initUploadAction() {
-                const {cityId} = this.getUserContext();
-                this.uploadAction = this.uploadAction + "?cityId=" + cityId;
             },
             doSearch(params) {
                 const {cityId} = this.getUserContext();

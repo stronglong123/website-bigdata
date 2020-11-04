@@ -1,5 +1,5 @@
 const baseConfig = {
-    supplyChainUrl:'/supplyChain'
+    basePrefix:'aipservice'
 }
 
 export default baseConfig

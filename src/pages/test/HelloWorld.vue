@@ -3,7 +3,6 @@
     <common-list :schema="schema" :tableData="datas" :total="total" :pageName="pageName" @search="doSearch" @rowAction="doAction">
       <template v-slot:leftActions="slotProps">
         <el-button type="primary" icon="el-icon-plus" size="medium" @click="addOwnerList">添加</el-button>
-        <file-uploader  text="批量导入" :action="uploadAction" @complete="uploadFile"></file-uploader>
       </template>
       <template v-slot:rightActions="slotProps">
         <el-link  type="primary" icon="el-icon-download" href="/supplyChain/templates/downloadOwner">下载导入模板</el-link>
@@ -36,7 +35,6 @@
   import Bus from 'components/eventBus/eventBus'
   import formSchema from './formSchema'
   // import {listOwners,addOwner,getOwnerById,checkOwnerCode,changeStatus} from 'api/ownerApi'
-  const uploadOwners = '/supplyChain/productOwner/upload'
   export default {
     name: "owner-list",
     data() {

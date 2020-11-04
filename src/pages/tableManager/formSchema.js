@@ -8,8 +8,8 @@ const typeOptions = [{key: 'VARCHAR', value: '字符串'},
 
 const formSchema = [
     {
-        name: '表名',
-        label: '货主名称',
+        name: 'tableName',
+        label: '表名',
         type: 'text',
         rules: [{required: true, message: '请填写货主名称'}],
     },

@@ -675,6 +675,9 @@
             Bus.$on('triggerSearch', (type = '') => {
                 this.emitSearch(type)
             })
+            if(!this.chooseRoleInfoList||!this.chooseRoleInfoList.roleCodes){
+                return;
+            }
             this.role = this.chooseRoleInfoList.roleCodes.map(it => it.code)
             const {cityId,warehouseId,serviceId} = this.getUserContext()
             this.org.cityId = cityId

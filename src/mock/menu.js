@@ -1,20 +1,20 @@
 export const menu = [
-    {
-        id: "helloM",
-        name: "测试页面",
-        nameSpace: "/helloM",
-        navList: [
-            {
-                id: "hello",
-                name: "测试",
-                nameSpace: "/hello",
-                sort: "0",
-                text: "测试"
-            }
-        ],
-        sort: "0",
-        text: "测试页面"
-    },
+    // {
+    //     id: "helloM",
+    //     name: "测试页面",
+    //     nameSpace: "/helloM",
+    //     navList: [
+    //         {
+    //             id: "hello",
+    //             name: "测试",
+    //             nameSpace: "/hello",
+    //             sort: "0",
+    //             text: "测试"
+    //         }
+    //     ],
+    //     sort: "0",
+    //     text: "测试页面"
+    // },
     {
         id: "tableManager",
         name: "表格管理",
@@ -30,5 +30,22 @@ export const menu = [
         ],
         sort: "0",
         text: "表格管理"
+    },
+
+    {
+        id: "项目管理",
+        name: "项目管理",
+        nameSpace: "/projectManager",
+        navList: [
+            {
+                id: "projectList",
+                name: "项目列表",
+                nameSpace: "/projectList",
+                sort: "1",
+                text: "项目列表"
+            },
+        ],
+        sort: "1",
+        text: "项目管理"
     }
 ]

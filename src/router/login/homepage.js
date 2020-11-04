@@ -1,5 +1,6 @@
 import helloRouter from '../test/helloRouter'
 import tableRouter from "../tableManager/tableRouter";
+import projectRouter from "../projectManager/projectRouter";
 
 const home = () => import('pages/homepage')
 
@@ -15,6 +16,7 @@ const homeRouter = [
         children:[
             ...helloRouter,
             ...tableRouter,
+            ...projectRouter,
         ]
     },
 ]

@@ -73,8 +73,8 @@ Vue.config.keyCodes.f12 = 123
 Vue.prototype._ = _
 Vue.prototype._store = store
 
-Vue.prototype.$axios = axios
-
+// Vue.prototype.$axios = axios
+Vue.prototype.$http = axios
 Vue.use(ElementUI);
 Vue.mixin(mixins)
 Vue.component('external-script', {

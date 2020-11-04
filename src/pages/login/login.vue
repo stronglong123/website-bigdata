@@ -52,7 +52,7 @@
 
 
 <script>
-    // import gtInit from "../../assets/gt/gt.js";
+    import gtInit from "../../assets/gt/gt.js";
     import {mapActions} from "vuex";
     // 获取api
     // import {getcaptchaApi, getValidate} from "api/loginApi";

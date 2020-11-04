@@ -889,7 +889,10 @@
                 // this.menuLoading = true
                 this.oriOrg = selectRole
                 //2.vuex修改，切换到新角色
-                const {orgId, warehouseId} = selectRole
+                const {orgId, warehouseId} = selectRole;
+                if(!this.userInfo||!this.userInfo.userLoginAuth){
+                    return
+                }
                 const chooseRole = this.userInfo.userLoginAuth.find(role => role.warehouseId === warehouseId && role.orgId === orgId)
                 if (!chooseRole) return
                 const roleCodes = chooseRole.roleCodes.map(it => it.code)

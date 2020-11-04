@@ -1,5 +1,5 @@
 const path = require('path')
-const devServer = 'http://wms.release.yijiupidev.com/supplyChain'
+const devServer = 'http://localhost:8199/'
 
 function resolve(dir) {
     return path.join(__dirname, dir)
