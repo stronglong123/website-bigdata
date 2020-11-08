@@ -1,6 +1,6 @@
 const path = require('path')
 const devServer = 'http://localhost:8199/'
-
+// const devServer = 'http://81.70.157.85:8199/'
 function resolve(dir) {
     return path.join(__dirname, dir)
 }
@@ -62,7 +62,8 @@ module.exports = {
                 ws: true,
                 pathRewrite: {'^/aipservice': ''},
             },
-        }
+        },
+
     },
     pwa: {
         name: '大数据系统',

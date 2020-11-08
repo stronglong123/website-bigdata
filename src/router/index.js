@@ -45,22 +45,23 @@ async function checkPermission(to,from,next) {
 }
 
 router.beforeEach((to, from, next) => {
-    next()
-    // if (to.path !== '/login' && !store.state.user.token) {
-    //     if (to.path === '/register') {
-    //         next()
-    //     } else {
-    //         if(to.path === '/forbiddenAu'||to.path === '/homepage'){
-    //             next()
-    //         }else{
-    //             next('');
-    //         }
-    //     }
-    // } else if (noPermissionPages.includes(to.name)) {
-    //     next()
-    // } else {
-    //     checkPermission(to,from,next)
-    // }
+    // 按原先的逻辑，先跳转到login页面，
+    // 在login页面判断是否有cookie，在进行单点登录
+    const freePages = ['login', 'register','changePassword']
+    if(!store.state.user.token){
+        if(freePages.includes(to.name)){
+            next()
+        }else{
+            next('/login');
+        }
+    }else{
+        next()
+        // if(noPermissionPages.includes(to.name)){
+        //     next()
+        // }else{
+        //     checkPermission(to,from,next)
+        // }
+    }
 });
 
 Vue.use(Router)

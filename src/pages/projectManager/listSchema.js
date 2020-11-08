@@ -1,15 +1,16 @@
 import moment from 'moment'
+
 const stateEnums = [
-    { key: '0', value: '作废' },
-    { key: '1', value: '未开始' },
-    { key: '2', value: '开发中' },
-    { key: '3', value: '开发完成' },
-    { key: '4', value: '部署test' },
-    { key: '5', value: '部署release' },
-    { key: '6', value: '部署pre' },
-    { key: '7', value: '部署product' }]
+    {key: '-1', value: '作废'},
+    {key: '1', value: '未开始'},
+    {key: '2', value: '开发中'},
+    {key: '3', value: '开发完成'},
+    {key: '4', value: '部署test'},
+    {key: '5', value: '部署release'},
+    {key: '6', value: '部署pre'},
+    {key: '7', value: '部署product'}]
 const stateOptions = {
-    '0': '作废',
+    '-1': '作废',
     '1': '未开始',
     '2': '开发中',
     '3': '开发完成',
@@ -34,9 +35,9 @@ const schema = {
             name: 'stateList',
             label: '状态',
             type: 'select',
-            mode:"multiple",
+            mode: "multiple",
             options: stateEnums,
-            defaultValue:["1"]
+            defaultValue: ['1','2']
         }
     ],
     columns: [
@@ -112,11 +113,48 @@ const schema = {
             width: 180
         },
     ],
-    rowActions: [{
-        type: 'view',
-        text: '详情',
-        actionType: "view",
-    }]
+    rowActions: [
+        {
+            type:'edit',
+            text:'编辑',
+            conditions:[{key:'state',value:[1,2,3,4,5,6,7]}]
+        },
+        {
+            type:'invalid',
+            text:'作废',
+            conditions:[{key:'state',value:[1,2,3,4]}]
+        },
+        {
+            type:'start',
+            text:'开始开发',
+            conditions:[{key:'state',value:[1]}]
+        },
+        {
+            type:'complete',
+            text:'完成任务',
+            conditions:[{key:'state',value:[2]}]
+        },
+        {
+            type:'test',
+            text:'部署test',
+            conditions:[{key:'state',value:[3]}]
+        },
+        {
+            type:'release',
+            text:'部署release',
+            conditions:[{key:'state',value:[4]}]
+        },
+        {
+            type:'pre',
+            text:'部署pre',
+            conditions:[{key:'state',value:[5]}]
+        },
+        {
+            type:'product',
+            text:'部署product',
+            conditions:[{key:'state',value:[6]}]
+        },
+    ]
 }
 
 export default schema;

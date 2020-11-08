@@ -18,7 +18,9 @@
     import Bus from 'components/eventBus/eventBus'
     import formSchema from './formSchema'
     const uploadTables = '/aipservice/import/importTable'
-
+    window._CONFIG = {};
+    window._CONFIG['domianURL'] = 'http://localhost:8199';
+    window._CONFIG['imgDomainURL'] = 'http://localhost:8080/jeecg-boot/sys/common/view';
     export default {
         name: "tableList",
         data() {
@@ -40,28 +42,49 @@
         },
         mounted() {
             this.doSearch({pageNum:1,pageSize:20});
+            //初始化websocket
+            this.initWebSocket()
         },
         methods: {
+            initWebSocket: function () {
+                // WebSocket与普通的请求所用协议有所不同，ws等同于http，wss等同于https
+                // var userId = store.getters.userInfo.id;
+                const userId = 1111;
+                var url = window._CONFIG['domianURL'].replace("https://","ws://").replace("http://","ws://")+"/websocket/"+userId;
+                this.websock = new WebSocket(url);
+                this.websock.onopen = this.websocketonopen;
+                this.websock.onerror = this.websocketonerror;
+                this.websock.onmessage = this.websocketonmessage;
+                this.websock.onclose = this.websocketclose;
+            },
+            websocketonopen: function () {
+                console.log("WebSocket连接成功");
+            },
+            websocketonerror: function (e) {
+                console.log("WebSocket连接发生错误");
+            },
+            websocketonmessage: function (e) {
+                console.log(e)
+                var data = eval("(" + e.data + ")");
+                console.log(data)
+                //处理订阅信息
+                if(data.cmd == "topic"){
+                    //TODO 系统通知
+
+                }else if(data.cmd == "user"){
+                    //TODO 用户消息
+
+                }
+            },
+            websocketclose: function (e) {
+                console.log("connection closed (" + e.code + ")");
+            },
+
+
             create() {
                 this.$router.push({name:'tableAdd'})
             },
             doSearch(params) {
-                const {cityId} = this.getUserContext();
-                params.cityId = cityId;
-                // listOwners(params).then(data => {
-                //   let dataList = data.dataList;
-                //   const pager = data.pager;
-                //   if (dataList && dataList.length) {
-                //     this.datas = dataList;
-                //     this.total = pager.recordCount;
-                //   }else{
-                //     this.datas = [];
-                //     this.total=0;
-                //   }
-                //
-                // }).catch((error) => {
-                //   this.$message.warning(error);
-                // });
             },
             doAction(params) {
                 const type = params.type;
@@ -80,13 +103,6 @@
                 _data.state = Number(!_data.state);
                 const msg = _data.state === 0 ? '停用' : '启用'
                 let params = {params: {"id": _data.id, "state": _data.state}}
-                // changeStatus(params).then(data => {
-                //   this.$message(`${msg}成功`);
-                // }).catch(e => {
-                //           _data.state = Number(!_data.state);
-                //           this.$message(`${msg}不成功，原因:${e}`)
-                //         }
-                // )
             },
             addOwnerList() {
                 this.formType = 'create';
@@ -112,27 +128,6 @@
                 values.cityId = cityId;
                 let _this = this;
                 this.visible = false;
-                // if (!values.id) {
-                //   values.state = 1;
-                //   addOwner(values).then(data => {
-                //     values= data;
-                //     values.index = this.datas.length + 1;
-                //     _this.datas.unshift(values);
-                //     _this.$message("添加成功")
-                //   }).catch((error) => {
-                //     _this.$message.warning(error);
-                //   });
-                // } else {
-                //   addOwner(values).then(data => {
-                //     const index = _this.datas.findIndex(d => d.id === data.id)
-                //     if (index !== -1) {
-                //       _this.datas.splice(index,1,values)
-                //     }
-                //     _this.$message("修改成功")
-                //   }).catch((error) => {
-                //     _this.$message.warning(error);
-                //   });
-                // }
             },
             uploadFile() {
                 Bus.$emit('triggerSearch', this.pageName);

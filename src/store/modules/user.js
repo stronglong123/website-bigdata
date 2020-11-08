@@ -1,4 +1,4 @@
-// import {login, getLoginInfo} from "../../api/loginApi";
+import {login, getLoginInfo} from "../../api/loginApi";
 // import {findParentOrgBy} from 'api/roleManageApi'
 import moment from 'moment'
 
@@ -69,15 +69,16 @@ const mutations = {
 const actions = {
     login : ({commit}, user) => {
         return new Promise((resolve, reject) => {
-            // login(user)
-            //     .then(res => {
-            //         commit('updateUserToken',res);
-            //         resolve(res);
-            //     },err=>{
-            //         reject(err);
-            //     }).catch(err => {
-            //     reject(err);
-            // })
+            login(user)
+                .then(res => {
+                    commit('updateUserInfo',res);
+                    commit('updateUserToken',res);
+                    resolve(res);
+                },err=>{
+                    reject(err);
+                }).catch(err => {
+                reject(err);
+            })
         })
     },
     getUserInfo : ({commit}, params) => {

@@ -1,4 +1,5 @@
 const stateOptions = [
+    {key: '-1', value: '作废'},
     {key: '1', value: '未开始'},
     {key: '2', value: '开发中'},
     {key: '3', value: '开发完成'},

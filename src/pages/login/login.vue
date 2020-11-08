@@ -112,7 +112,6 @@
         methods: {
             ...mapActions("user", ["login", "getUserInfo"]),
             ...mapActions("appConfig", ["getVersionInfo"]),
-            ...mapActions("globalSettings", ['getEnvConfig']),
             checkLogin() {
                 this.fullscreenLoading = true;
                 if (!this.account || !this.password) {
@@ -156,48 +155,36 @@
                     "userName": "测试",
                     "usertoken": "726509d0-cf1d-4d39-b051-fae2b76642df"
                 }
-
-                this.$router.replace({name: "homepage"});
-                // this.login({
-                //     account: this.account,
-                //     password: this.password,
-                //     appCode: this.appCode,
-                //     appVersion: this.appVersion,
-                //     deviceId: this.deviceId,
-                //     deviceOS: this.deviceOS,
-                //     deviceType: this.deviceType
-                // })
-                //     .then(data => {
-                //         this.userToken = data.token;
-                //         this.getEnvConfig()
-                //         this.getUserInfo({userToken: this.userToken})
-                //             .then(data => {
-                //                 this.getSurplusDays(data.expireDate);
-                //
-                //                 this.fullscreenLoading = false;
-                //                 this.$router.replace({name: "homepage"});
-                //
-                //                 // 将账号存在localStorage里
-                //                 if (this.rememberUser) {
-                //                     localStorage.setItem("saveUser", true);
-                //                     localStorage.setItem("account", this.account);
-                //                 } else {
-                //                     localStorage.setItem("saveUser", false);
-                //                     localStorage.removeItem("account");
-                //                 }
-                //             })
-                //             .catch(e => {
-                //                 captchaObj.reset();
-                //                 this.fullscreenLoading = false;
-                //                 this.$message.warning(e);
-                //             });
-                //     })
-                //     .catch(err => {
-                //         captchaObj.reset();
-                //         // this.validator && this.validator.reset();
-                //         this.fullscreenLoading = false;
-                //         this.$message.warning(err);
-                //     });
+                this.fullscreenLoading = true;
+                this.login({
+                    userName: this.account,
+                    password: this.password,
+                    appCode: this.appCode,
+                    appVersion: this.appVersion,
+                    deviceId: this.deviceId,
+                    deviceOS: this.deviceOS,
+                    deviceType: this.deviceType
+                })
+                    .then(data => {
+                        this.fullscreenLoading = false;
+                        this.userToken = data.token;
+                        this.$store.state.user.token = data.token
+                        // 将账号存在localStorage里
+                        if (this.rememberUser) {
+                            localStorage.setItem("saveUser", true);
+                            localStorage.setItem("account", this.account);
+                        } else {
+                            localStorage.setItem("saveUser", false);
+                            localStorage.removeItem("account");
+                        }
+                        this.$router.replace({name: "homepage"});
+                    })
+                    .catch(err => {
+                        // captchaObj.reset();
+                        // this.validator && this.validator.reset();
+                        this.fullscreenLoading = false;
+                        this.$message.warning(err);
+                    });
             },
             // 计算两个日期之间相差多少天
             getSurplusDays(expireDate) {

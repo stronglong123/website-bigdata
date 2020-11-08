@@ -49,6 +49,7 @@
                 uploadAction:uploadTables,
                 pageName: 'table-list',
                 moment,
+                searchParams:{},
             }
         },
         components:{
@@ -60,6 +61,7 @@
         },
         methods: {
             create() {
+                this.formType ='create';
                 this.visible =true;
             },
             doSearch(params) {
@@ -76,38 +78,70 @@
                 }).catch((error) => {
                     this.$message.error(error);
                 });
+                this.searchParams =params;
             },
             doAction(params) {
+                console.info(params);
                 const type = params.type;
-                const data = params.data;
-                // if (type === 'detail') {
-                //     this.title = '货主详情';
-                //     this.formType = 'detail';
-                //     this.openForm();
-                //     this.formData = data;
-                // } else {
-                //     this.updateStatus(data)
-                // }
+                let data = params.data;
+                if (type == 'edit') {
+                    this.formType ='edit';
+                    this.visible = true;
+                    this.formData = data;
+                    return;
+                }
+                let state;
+                if(type=='start'){
+                    state = 2
+                }else if(type=='complete'){
+                    state = 3
+                }else if(type=='test'){
+                    state = 4
+                }else if(type=='release'){
+                    state = 5
+                }else if(type=='pre'){
+                    state = 6
+                }else if(type=='product'){
+                    state = 7
+                }else if(type=='invalid'){
+                    state = -1
+                }
+                this.updateStatus(data,state);
             },
-            updateStatus(row) {
+            updateStatus(row, state) {
+                if (!state&&state!=0 ) {
+                    this.$message(`状态不能为空`);
+                    return;
+                }
                 const _data = this.datas.find(record => record.id === row.id);
-                _data.state = Number(!_data.state);
-                const msg = _data.state === 0 ? '停用' : '启用';
-                let params = {params: {"id": _data.id, "state": _data.state}}
+                _data.state = Number(state);
+                let params = {"id": _data.id, "state": state}
+                this.updateData(params);
+            },
+            updateData(params){
                 update(params).then(data => {
-                  this.$message(`${msg}成功`);
+                    this.$message(`操作成功`);
                 }).catch(e => {
-                          _data.state = Number(!_data.state);
-                          this.$message(`${msg}不成功，原因:${e}`)
-                        }
+                        this.$message(`操作不成功，原因:${e}`)
+                    }
                 )
             },
+
             handleClose(){
                 this.visible = false
             },
             handleSubmit(data) {
                 data.deadTime = moment(data.deadTime).format('YYYY-MM-DD HH:mm:ss');
-                console.info(data)
+                console.info(data);
+                if (this.formType == 'create'){
+                    this.createData(data);
+                }else{
+                    this.updateData(data);
+                }
+                this.visible = false;
+                this.doSearch(this.searchParams)
+            },
+            createData(data){
                 insert(data).then(data => {
                     this.$message('操作成功')
                     this.visible = false
@@ -115,8 +149,7 @@
                 }).catch(err => {
                     this.$message.error(`操作失败，原因:${err}`)
                 })
-                this.visible = false;
-            },
+            }
         }
     }
 </script>

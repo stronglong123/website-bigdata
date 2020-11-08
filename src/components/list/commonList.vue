@@ -36,7 +36,6 @@
                                     :defaultActiveFirstOption="false"
                                     :showArrow="true"
                                     :mode="item.mode || 'default'"
-                                    :disabled='item.disabled'
                                     :maxTagCount="2"
                                     :filterOption="filterOption"
                                     v-decorator="[`${item.name}`,{rules:item.required ? [{required:true,message:`请选择${item.label}`}]:[],initialValue:item.defaultValue}]"
@@ -59,7 +58,6 @@
                                     :filterOption="false"
                                     v-decorator="[`${item.name}`,{rules:item.required ? [{required:true,message:`请选择${item.label}`}]:[]}]"
                                     v-if="item.type === 'remoteSelect'"
-                                    :disabled='item.disabled'
                                     @search="(value) =>remoteSearchOptions(item, value)"
                                     @dropdownVisibleChange="(open) => open && remoteSearchOptions(item,'')"
                                     @select="(value,option)=>value && handleSelect(item,value)"
@@ -103,65 +101,20 @@
                                     :options="item.options"
                                     :showSearch="{filter}"
                                     changeOnSelect/>
-                            <smart-city-selector
-                                v-if="item.type === 'city'"
-                                :unmatchReturn="false"
-                                v-decorator="[`${item.name}`,{rules:item.required ? [{required:true,message:`请选择${item.label}`}]:[]}]"
-                                ></smart-city-selector>
                         </a-form-item>
                     </el-col>
                 </template>
                 <!-- <el-col :span="overFlow === true ? 12 :8" style="text-align: right;padding-right:30px;"> -->
-                <el-col :span="overFlow === true ? 12 :4" style="text-align: right;margin:4px 0 16px 0;">
+                <el-col :span="overFlow === true ? 12 :4" style="text-align: right;margin:4px 0;">
                     <el-button type="primary" size="medium" @click="(e) => emitSearch(pageName)">查询</el-button>
                     <el-button size="medium" @click="handleReset">重置</el-button>
                     <el-button size="small" type="text" v-if="searchItems.length > 6" @click="expand = !expand">
                         {{expand?'收起':'展开'}}
                     </el-button>
                 </el-col>
-
-                <template v-if="searchPlan">
-                    <el-col :span="4">
-                        <a-form-item :wrapper-col="{span:16}">
-                            <a-checkbox
-                                v-decorator="[`saveParams`, { valuePropName: 'checked',initialValue:false  }]"
-                                @change='saveParamsOption'
-                            >
-                                保存为查询方案
-                            </a-checkbox>
-                        </a-form-item>
-                    </el-col>
-                </template>
-
-                <!-- 判断当前页面是否有快捷查询 -->
-                <el-col :span="24" v-if="searchParams.length>0 && isRefish">
-                    <template >
-                        <template style="margin-top:8px;" v-for="(tag,index) in searchParams">
-                            <el-tag
-                                closable
-                                size="small"
-                                effect="dark"
-                                style="margin-right:10px;cursor:pointer;transition:0s!important"
-                                @click="handleClickTag(tag,index)"
-                                @close='handleCloseTag(index,tag)'
-                                @dblclick.native="(e)=>dbHandleClickTag(tag,index,e)"
-                            >
-                                {{tag.paramsName=='查询方案'?'查询方案'+Number(index+1):tag.paramsName}}
-                            </el-tag>
-                            <!-- <el-input
-                                class="input-new-tag"
-                                v-else
-                                v-model="tag.paramsName"
-                                :ref="'paramsName'+index"
-                                size="mini"
-                                @keyup.enter.native="handleInputConfirm(tag,index)"
-                            >
-                            </el-input> -->
-                        </template>
-                    </template>
-                </el-col>
             </el-row>
         </a-form>
+
         <div class="search-result-list">
             <el-row :gutter="10">
                 <div class='slotAction'>
@@ -286,7 +239,6 @@
                                                        @click="() => handleTableAction(action.type, scope.row)">
                                                 {{action.text}}
                                             </el-button>
-
                                         </template>
 
                                     </template>
@@ -306,7 +258,6 @@
                                 type="expand"
                                 v-else-if="col.type==='expand'"
                                 :key="col.key"
-                                width='50'
                         >
                             <template slot-scope="scope">
                                 <div v-html="col.slotRender(scope.row)" v-if="col.slotRender"></div>
@@ -339,9 +290,9 @@
                             >
                                 <template slot-scope="scope">
                                     <a-select
-                                        :value='scope.row[col.key]' 
-                                        style="width: 120px" 
-                                        @change='(val)=>handleChangeSel(col.key,val,scope.row)' 
+                                        :value='scope.row[col.key]'
+                                        style="width: 120px"
+                                        @change='(val)=>handleChangeSel(col.key,val,scope.row)'
                                         :disabled='!!col.conditions&&!(col.conditions && col.conditions.value.find(it=>it===scope.row[col.conditions.key]))'
                                     >
                                         <a-select-option v-for="item in col.dataList" :key="item.id">{{item.name}}</a-select-option>
@@ -486,20 +437,6 @@
                                         </a-dropdown>
                                     </template>
                                 </template>
-                                <!-- <template v-for="(action,index) in rowActions">
-                                    <el-button :key="index"
-                                               v-allow="action.actionType || ''"
-                                               v-if="!action.conditions  && checkPermission(action.permission,scope.row)"
-                                               type="text" @click="() => handleTableAction(action.type, scope.row)">
-                                        {{action.text}}
-                                    </el-button>
-                                    <el-button :key="index"
-                                               v-allow="action.actionType || ''"
-                                               v-else-if="(!action.conditions || action.conditions.every(condition => condition.value.includes(scope.row[condition.key]))) && checkPermission(action.permission,scope.row)"
-                                               type="text" @click="() => handleTableAction(action.type, scope.row)">
-                                        {{action.text}}
-                                    </el-button>
-                                </template> -->
 
                             </template>
                         </el-table-column>
@@ -507,23 +444,6 @@
 
                 </template>
             </el-table>
-
-            <a-modal
-                title="保存查询方案"
-                :visible="visible"
-                destroyOnClose
-                width='400px'
-                @ok="handleSaveParamsName"
-                @cancel="cancelSaveParams"
-            >
-                <el-row>
-                  <el-col :span="6" class="formLabel">方案名称：</el-col>
-                  <el-col :span="16">
-                        <a-input placeholder="请输入方案名称" v-model="params_Name" style="width:100%;" />
-                  </el-col>
-                </el-row>
-            </a-modal>
-
 
             <el-pagination
                     v-if="needPagination"
@@ -549,8 +469,6 @@
 <script>
     import Bus from 'components/eventBus/eventBus'
     import moment from 'moment'
-    // import smartCitySelector from "@/components/comboSelector/smartCitySelector"
-    import {mapMutations, mapState,mapGetters} from 'vuex'
 
     export default {
         name: "common-list",
@@ -595,9 +513,6 @@
                 save_params:[],
                 isRefresh:false
             }
-        },
-        components:{
-            // smartCitySelector
         },
         props: {
             schema: {
@@ -675,54 +590,20 @@
             Bus.$on('triggerSearch', (type = '') => {
                 this.emitSearch(type)
             })
-            if(!this.chooseRoleInfoList||!this.chooseRoleInfoList.roleCodes){
-                return;
+            if(this.chooseRoleInfoList && this.chooseRoleInfoList.roleCodes){
+                this.role = this.chooseRoleInfoList.roleCodes.map(it => it.code);
+                this.org.cityId = this.chooseRoleInfoList.orgId
+                this.org.warehouseId = this.chooseRoleInfoList.warehouseId
             }
-            this.role = this.chooseRoleInfoList.roleCodes.map(it => it.code)
-            const {cityId,warehouseId,serviceId} = this.getUserContext()
-            this.org.cityId = cityId
-            this.org.warehouseId = warehouseId
-            this.org.serviceId = serviceId
+
             if (this.initParams && Object.keys(this.initParams).length) {
                 this.initSearchParams(this.initParams)
             }
-            // 查寻到搜索方案
-            // 先看vuex里面有没有，如果有就直接取，没有就调用接口
-            const data = {
-                path:this.$route.name,
-                userId:this.$store.state.user.userInfo.userId,
-                cityId,
-                warehouseId
-            }
-            this.getSearchParams(data)
         },
         beforeDestroy() {
             Bus.$off('triggerSearch', this.emitSearch)
         },
         computed: {
-            ...mapState('searchParams',['userSearchPrarams']),
-            ...mapGetters('searchParams',['getSearchParams']),
-            searchParams(){
-                const {warehouseId,cityId} = this.getUserContext()
-                const userId = this.$store.state.user.userInfo.userId
-                const path = this.$route.name
-                if(this.userSearchPrarams && this.userSearchPrarams.length){
-                    let s = this.userSearchPrarams.find(it=>{
-                        if(it){
-                            return it.userId==userId && it.path == path && it.warehouseId == warehouseId && it.orgId == cityId
-                        }else{
-                            return false
-                        }
-                    })
-                    if(s){
-                        return s.params
-                    }else{
-                        return []
-                    }
-                }else{
-                    return []
-                }
-            },
             count() {
                 return this.searchItems.length > 6 ? (this.expand ? this.searchItems.length : 6) : this.searchItems.length
             },
@@ -789,33 +670,16 @@
             }
         },
         methods: {
-            ...mapMutations('searchParams',['saveParams','delParams','saveParamsName']),
             initSearchParams(params = {}) {
-                const initKeys = Object.keys(params)
-                initKeys.forEach(key => {
-                    const item = this.searchItems.find(it => it.name === key)
-                    if (!item) {
-                        delete params[key]
-                    }
-                })
                 setTimeout(() => {
                     this.form.setFieldsValue(params)
                     this.emitSearch(this.pageName || '')
                 }, 0)
             },
             remoteSearchOptions(item, value) {
-                let parentValue = null
-                if (item.parentItem) {
-                    parentValue = this.form.getFieldValue(item.parentItem)
-                    if (parentValue === undefined || parentValue === null || parentValue === '') {
-                        this.$set(item, 'options', [])
-                        this.$message.info(`请先输入${item.label}`)
-                        return
-                    }
-                }
                 if (item.dataSource) {
-                    const {cityId, userId, orgId, warehouseId,serviceId,orgType} = this.getUserContext()
-                    item.dataSource(value, {cityId, userId, orgId, warehouseId,serviceId,orgType},parentValue).then(data => {
+                    const {cityId, userId, orgId, warehouseId} = this.getUserContext()
+                    item.dataSource(value, {cityId, userId, orgId, warehouseId}).then(data => {
                         this.$set(item, 'options', data)
                     }).catch(e => {
                         console.log(`更新下拉数据失败，原因:${e}`)
@@ -825,15 +689,15 @@
 
             copSearchOptions(item, value) {
                 if (item.dataSource && (!item.options || item.options.length === 0)) {
-                    const {cityId, userId, orgId, warehouseId,serviceId,orgType} = this.getUserContext()
-                    item.dataSource(value, {cityId, userId, orgId, warehouseId,serviceId,orgType}).then(data => {
+                    const {cityId, userId, orgId, warehouseId} = this.getUserContext()
+                    item.dataSource(value, {cityId, userId, orgId, warehouseId}).then(data => {
                         this.$set(item, 'options', data)
                     }).catch(e => {
                         console.log(`更新下拉数据失败，原因:${e}`)
                     })
                 } else if (item.dropRefresh) {
-                    const {cityId, userId, orgId, warehouseId,serviceId,orgType} = this.getUserContext()
-                    item.dataSource(value, {cityId, userId, orgId, warehouseId,serviceId,orgType}).then(data => {
+                    const {cityId, userId, orgId, warehouseId} = this.getUserContext()
+                    item.dataSource(value, {cityId, userId, orgId, warehouseId}).then(data => {
                         this.$set(item, 'options', data)
                     }).catch(e => {
                         console.log(`更新下拉数据失败，原因:${e}`)
@@ -852,14 +716,9 @@
                 let pageParams = {};
                 pageParams.pageNum = this.pagination.currentPage;
                 pageParams.pageSize = this.pagination.defaultPageSize;
-                if(this.isRefresh){
-                    pageParams.pageNum = 1
-                    this.pagination.currentPage = 1;
-                }
                 this.form.validateFields((error, values) => {
                     if (!error) {
                         this.$emit(`search`, {...values, ...pageParams})
-                        this.isRefresh = false
                     }
                 })
             },
@@ -945,6 +804,7 @@
             handleMenu(row, column, event) {
                 event.preventDefault();
                 event.stopPropagation();
+                console.log('右键点击事件触发')
                 const actions = this.schema.rowActions.filter(action => this.checkAvaliable(row, action))
                 actions.length && this.$contextmenu({
                     items: actions.map(it => {
@@ -962,136 +822,9 @@
             },
             checkAvaliable(row, action) {
                 return (!action.actionType || this.btnPermissions.some(it => it.toLowerCase() === action.actionType)
-                    ) && (!action.conditions || action.conditions.every(condition => condition.value.includes(row[condition.key]))
-                    ) && this.checkPermission(action.permission, row)
-            },
-            handleChangeSel(key,val,row){
-                const data = [key,val,row]
-                this.$emit('handleChangeSel',data)
-            },
-            handleFormValue(obj={}) {
-                const keys = Object.keys(obj)
-                keys.forEach(key => {
-                    if(key!='saveParams'){
-                        const item = this.searchItems.find(it => it.name === key)
-                        // if (item.type === 'date' && obj[key] && obj[key].length) {
-                        if (item.type === 'date' && obj[key]) {
-                            // obj[key] = obj[key].map(str => {
-                            //     return moment(str,'YYYY-MM-DD HH:mm:ss')
-                            // })
-                            obj[key][0] = moment(obj[key][0]).startOf('day')
-                            obj[key][1] = moment(obj[key][1]).endOf('day')
-                        }
-                    }
-                })
-                delete obj.saveParams
-                return obj
-            },
-            handleClickTag(tag){
-                this.isdb = false
-                // let timeout = setTimeout(()=>{
-                setTimeout(()=>{
-                    if(this.isdb!=true){
-                        const {value} = tag                
-                        this.form.resetFields()
-                        this.form.setFieldsValue(this.handleFormValue(value))
-                        this.emitSearch(this.pageName)
-                    }
-                },300)
-            },
-            handleCloseTag(index,tag){
-                const path = this.$route.name
-                const userId = this.$store.state.user.userInfo.userId
-                const {cityId,warehouseId} = this.getUserContext()
-                const data={
-                    path,
-                    cityId,
-                    warehouseId,
-                    userId,
-                    id:tag.id,
-                    index
-                }
-                this.delParams(data)
-            },
-            dbHandleClickTag(tag,index){
-                this.isdb = true
-                this.isRefish = false
-                this.$nextTick(()=>{
-                    this.isRefish = true
-                    this.$nextTick(()=>{
-                        this.$refs['paramsName'+index][0].focus()
-                    })
-                })
-            },
-            // 保存
-            // handleInputConfirm(tag,index){
-            //     this.isRefish = false
-            //     this.$nextTick(()=>{
-            //         this.isRefish = true
-            //     })
-            //     const path = this.$route.name
-            //     const userId = this.$store.state.user.userInfo.userId
-            //     const {cityId,warehouseId} = this.getUserContext()
-            //     const data={
-            //         path,
-            //         cityId,
-            //         warehouseId,
-            //         userId,
-            //         id:tag.id,
-            //         index,
-            //         paramsName:tag.paramsName
-            //     }
-            //     this.saveParamsName(data)
-            // },
-            // 取消双击保存名字
-            handleSaveParamsName(){
-                if(!this.params_Name){
-                    this.$message.warning('请输入方案名称')
-                    return false
-                }
-                this.save_params[2].paramsName = this.params_Name
-                this.saveParams(this.save_params)
-                this.form.setFieldsValue({saveParams:false})
-                this.visible = false
-            },
-            saveParamsOption(val){
-                // 勾选时就出发保存
-                if(val.target.checked){
-                    this.form.validateFields((error, values) => {
-                    if (!error) {
-                        const initKeys = Object.keys(values)
-                        initKeys.forEach(key => {
-                            if(key!='saveParams'){
-                                const item = this.searchItems.find(it => it.name === key)
-                                if(item.type === 'date' && values[key] && values[key].length){
-                                    values[key] = values[key].map(str => {
-                                        return moment(str).format('YYYY-MM-DD')
-                                    })
-                                }
-                            }
-                        })
-                        const {warehouseId,cityId} = this.getUserContext()
-                        const params = [{warehouseId,cityId,userId:this.$store.state.user.userInfo.userId},this.$route.name,{
-                            paramsName:'查询方案',
-                            value:values
-                        }]
-                        this.save_params = params
-                        this.visible = true
-                        this.isRefish = false
-                        this.$nextTick(()=>{
-                            this.isRefish = true
-                        })
-                    }
-                })
-                }
-            },
-            cancelSaveParams(){
-                this.visible = false
-                this.form.setFieldsValue({saveParams:false})
+                ) && (!action.conditions || action.conditions.every(condition => condition.value.includes(row[condition.key]))
+                ) && this.checkPermission(action.permission, row)
             }
-        },
-        deactivated(){
-            this.form.setFieldsValue({saveParams:false})
         }
     }
 </script>
@@ -1179,22 +912,5 @@
     }
     .class-a > span[class^='Contextmenu_menu_item'] {
         height:24px;
-    }
-    
-    .input-new-tag {
-        // width: 120px;
-        width: 120px;
-        height: 24px!important;
-        margin-right: 10px;
-        vertical-align: bottom;
-        >input{
-            height: inherit!important;
-            padding: 0 10px;
-        }
-    }
-
-    .formLabel{
-        display: flex;
-        line-height: 32px;
     }
 </style>

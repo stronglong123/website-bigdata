@@ -82,10 +82,10 @@
                 </div>
                 <div class="main-content-header">
                     <div class="top-bar" :style="{color:currentTheme.headFontColor}">
-                        <span class="welcomeUser">{{userInfo.trueName}}, 你好</span>
+                        <span class="welcomeUser">{{userInfo.trueName}}，你好</span>
                         <el-dropdown @command="changeRole" trigger="click" :style="{color:currentTheme.headFontColor}">
               <span class="el-dropdown-link">
-                {{`${chooseRoleInfoList.orgName}`}}
+
                 <i
                         class="el-icon-arrow-down el-icon--right"
                 ></i>
@@ -358,7 +358,7 @@
 <script>
     import {mapState, mapActions, mapMutations} from 'vuex';
     import Bus from '@/components/eventBus/eventBus.js'
-    import {getMemuList, clearCookie} from "../api/loginApi";
+    import { clearCookie} from "../api/loginApi";
     import QRCode from 'qrcodejs2'
     import menuGroups from './routerGroup'
     import theme from '../assets/css/theme.js'
@@ -677,10 +677,17 @@
                 this.asideCollapse = true;
             },
             logOut() {
-                clearCookie()
-                this.$router.push({name: 'login'});
-                this.logout()
+                this.clearUser();
             },
+            clearUser(){
+                clearCookie({}).then(()=>{
+                    this.logout()
+                    this.$router.push({name: 'login'});
+                }).catch(e => {
+                    this.$message.error(e)
+                });
+            },
+
             //根据选中的角色找到对应的权限ID
             findAuthIdRole(code) {
                 let findRole = this.userInfo.userLoginAuth.find(
@@ -890,6 +897,13 @@
                 this.oriOrg = selectRole
                 //2.vuex修改，切换到新角色
                 const {orgId, warehouseId} = selectRole;
+                const itemNav1 = {name: '用户信息', id: 'manageState'}
+                const item1 = {name: '用户信息', id: 'workbench'}
+                this.handleMenuClick(itemNav1,item1)
+
+                const itemNav = {name: '工作看板', id: 'myWorkbench'}
+                const item = {name: '用户信息', id: 'workbench'}
+                this.handleMenuClick(itemNav,item)
                 if(!this.userInfo||!this.userInfo.userLoginAuth){
                     return
                 }
@@ -1273,7 +1287,7 @@
 </style>
 <style lang="scss">
     // element ui 全局样式表
-    @import "../assets/fonts/PingFang.css";
+    /*@import "../assets/fonts/PingFang.css";*/
     @import "../assets/css/common.less";
 
     .el-tabs--top {

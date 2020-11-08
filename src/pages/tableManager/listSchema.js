@@ -91,6 +91,20 @@ const schema = {
         },
     ],
     rowActions:[
+        {
+            type:'detail',
+            actionType:"view",
+            text:'详情'
+        },
+        {
+            type:'push',
+            actionType:"update",
+            text:'下推',
+            permission: function (row, role, org) {
+                return org.serviceId === 1
+            },
+            conditions:[{key:'pushState',value:[0]}]
+        },
     ]
 }
 
