@@ -158,6 +158,7 @@
         <buttonGroup>
             <div slot="button">
                 <el-button size="medium" type="primary" @click="submitOrder">提交</el-button>
+                <el-button size="medium" @click="back">保存</el-button>
                 <el-button size="medium" @click="back">返回</el-button>
             </div>
         </buttonGroup>
@@ -181,6 +182,7 @@
                     {value: 'TINYINT', label: '短数值'},
                     {value: 'INTEGER', label: '数值'},
                     {value: 'BIGINT', label: '序列'},
+                    {value: 'DATE', label: '时间日期'},
                 ],
                 nullOptions: [{value: 'TRUE', label: '是'}, {value: 'FALSE', label: '否'}],
             }
@@ -215,7 +217,10 @@
                             });
                         });
                         createTable(params).then(data => {
-                            this.$message.info(data);
+                            this.$alert(data[0], '表结构', {
+                                confirmButtonText: '确定',
+                                center: true
+                            });
                             // this.back();
                         }).catch(e => {
                             this.$message.error(`创建表单失败，原因：${e}`);

@@ -12,10 +12,10 @@
                                 ，祝你开心每一天！
                             </span>
                             <div class="work-header-detail">
-                                <span>
-                                    您目前登录的单位是
-                                    <b>{{chooseRoleInfoList.orgName}}</b>
-                                </span>
+<!--                                <span>-->
+<!--                                    您目前登录的单位是-->
+<!--                                    <b>{{chooseRoleInfoList.orgName}}</b>-->
+<!--                                </span>-->
 <!--                                <span v-if="!isCustomer">-->
 <!--                                    您在当前单位的角色是-->
 <!--                                    <b>{{chooseRoleInfoList.roleCodes.map(role => role.name).join(',')}}</b>-->
@@ -45,6 +45,9 @@
                     </el-col>
                 </el-row>
             </div>
+        </a-card>
+        <a-card title="工作指南">
+            <div ref="chart" style="width:100%;height:376px"></div>
         </a-card>
 
         <a-modal title="请勾选常用菜单" :visible="visible" @ok="handleOk" @cancel="handleCancel">
@@ -112,6 +115,7 @@ export default {
         if(this.$store.state.user.choosenRole.find(it=>it==='Customer')){
             this.isCustomer = true
         }
+        this.getEchartData();
     },
     watch: {
         choosenOrg(n) {
@@ -161,6 +165,41 @@ export default {
         ...mapState("user", ["userInfo", "choosenOrg", "choosenWarehouse","chooseRoleInfoList"])
     },
     methods: {
+        getEchartData() {
+            const chart = this.$refs.chart
+            if (chart) {
+                const myChart = this.$echarts.init(chart)
+                const option = {
+                    title: {
+                        text: 'ECharts 入门示例'
+                    },
+                    tooltip: {},
+                    legend: {
+                        data:['销量']
+                    },
+                    xAxis: {
+                        data: ["衬衫","羊毛衫","雪纺衫","裤子","高跟鞋","袜子"]
+                    },
+                    yAxis: {},
+                    series: [{
+                        name: '销量',
+                        type: 'bar',
+                        data: [5, 20, 36, 10, 10, 20]
+                    }]
+                };
+
+                myChart.setOption(option)
+                window.addEventListener("resize", function() {
+                    myChart.resize()
+                })
+            }
+            this.$on('hook:destroyed',()=>{
+                window.removeEventListener("resize", function() {
+                    myChart.resize();
+                });
+            })
+        },
+
         handleRouteChange(item) {
             let params = {
                 fieldName: item.id,

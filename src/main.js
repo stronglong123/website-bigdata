@@ -7,6 +7,8 @@ import axios from 'axios'
 import _ from 'lodash'
 import '@/assets/fonts/iconfont.css'
 import './antd'
+import echarts from 'echarts'
+
 // import './components/timeOutLogin/loginModal'
 import './draggableInit'
 import ElementUI from 'element-ui';
@@ -72,6 +74,7 @@ Vue.config.keyCodes.f11 = 122
 Vue.config.keyCodes.f12 = 123
 Vue.prototype._ = _
 Vue.prototype._store = store
+Vue.prototype.$echarts = echarts
 
 // Vue.prototype.$axios = axios
 Vue.prototype.$http = axios

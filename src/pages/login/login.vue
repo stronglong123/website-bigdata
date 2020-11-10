@@ -168,7 +168,7 @@
                     .then(data => {
                         this.fullscreenLoading = false;
                         this.userToken = data.token;
-                        this.$store.state.user.token = data.token
+                        // this.$store.state.user.token = data.token
                         // 将账号存在localStorage里
                         if (this.rememberUser) {
                             localStorage.setItem("saveUser", true);
