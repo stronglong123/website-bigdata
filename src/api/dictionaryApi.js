@@ -17,6 +17,7 @@ export function insert(params = {}) {
     return httpUtil.fetchPost(questionBankUrls.insert, params)
 }
 
+
 // 保存
 export function update(params = {}) {
     return httpUtil.fetchPost(questionBankUrls.update, params)
