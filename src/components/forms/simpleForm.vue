@@ -16,6 +16,13 @@
                                 @change="(e) => handleTextChange(item,e)"
                         >
                         </a-input>
+                        <a-textarea
+                                v-decorator="[`${item.name}`,{rules:item.rules}]"
+                                :placeholder="item.placeholder"
+                                v-if="item.type === 'textarea'"
+                                :auto-size="{ minRows: 6}"
+                                @change="(e) => handleTextChange(item,e)"
+                        />
                         <a-input-number
                                 v-decorator="[`${item.name}`,{rules:item.rules}]"
                                 :placeholder="item.placeholder"

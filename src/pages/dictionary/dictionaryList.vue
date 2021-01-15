@@ -1,8 +1,10 @@
 <template>
     <div>
-        <common-list :schema="schema" :tableData="datas" :total="total" :pageName="pageName" @search="doSearch" @rowAction="doAction">
+        <common-list :schema="schema" :tableData="datas" :total="total" :pageName="pageName" @search="doSearch"
+                     @rowAction="doAction">
             <template v-slot:leftActions="slotProps">
                 <el-button type="primary" size="medium" icon="el-icon-plus" @click="create">新建</el-button>
+                <!--                <file-uploader  text="批量导入" :action="uploadAction" @complete="uploadFile"></file-uploader>-->
             </template>
         </common-list>
         <a-modal
@@ -22,20 +24,22 @@
             ></simple-form>
         </a-modal>
     </div>
+
 </template>
 
 <script>
-    import {pageList,insert,update} from 'api/projectManger'
     import commonList from 'components/list/commonList'
     import schema from './listSchema'
     import Bus from 'components/eventBus/eventBus'
     import formSchema from './formSchema'
     const uploadTables = '/aipservice/import/importTable'
+    import {pageList,insert,update} from 'api/dictionaryApi'
     import simpleForm from 'components/forms/simpleForm'
-    import moment from 'moment'
+    import moment from "moment";
+
 
     export default {
-        name: "tableList",
+        name: "dictionaryList",
         data() {
             return {
                 schema:schema,
@@ -43,14 +47,11 @@
                 datas:[],
                 total:0,
                 visible:false,
-                title:'添加任务',
+                title:'添加表',
                 formType:'create',
                 formData:{},
                 uploadAction:uploadTables,
-                pageName: 'table-list',
-                moment,
-                swal,
-                searchParams:{},
+                pageName: 'dictionary-list',
             }
         },
         components:{
@@ -89,50 +90,12 @@
                     this.formType ='edit';
                     this.visible = true;
                     this.formData = data;
-                    return;
                 }
-                let state;
-                if(type=='start'){
-                    state = 2
-                }else if(type=='complete'){
-                    state = 3
-                }else if(type=='test'){
-                    state = 4
-                }else if(type=='release'){
-                    state = 5
-                }else if(type=='pre'){
-                    state = 6
-                }else if(type=='product'){
-                    state = 7
-                }else if(type=='invalid'){
-                    state = -1
-                }
-                this.updateStatus(data,state);
             },
-            updateStatus(row, state) {
-                if (!state&&state!=0 ) {
-                    this.$message(`状态不能为空`);
-                    return;
-                }
-                const _data = this.datas.find(record => record.id === row.id);
-                _data.state = Number(state);
-                let params = {"id": _data.id, "state": state}
-                this.updateData(params);
-            },
-            updateData(params){
-                update(params).then(data => {
-                    this.$message(`操作成功`);
-                }).catch(e => {
-                        this.$message(`操作不成功，原因:${e}`)
-                    }
-                )
-            },
-
-            handleClose(){
-                this.visible = false
+            handleClose() {
+                this.visible = false;
             },
             handleSubmit(data) {
-                data.deadTime = moment(data.deadTime).format('YYYY-MM-DD HH:mm:ss');
                 console.info(data);
                 if (this.formType == 'create'){
                     this.createData(data);
@@ -150,6 +113,19 @@
                 }).catch(err => {
                     this.$message.error(`操作失败，原因:${err}`)
                 })
+            },
+
+            updateData(params){
+                update(params).then(data => {
+                    this.$message(`操作成功`);
+                }).catch(e => {
+                        this.$message(`操作不成功，原因:${e}`)
+                    }
+                )
+            },
+
+            uploadFile() {
+                Bus.$emit('triggerSearch', this.pageName);
             }
         }
     }

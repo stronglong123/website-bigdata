@@ -28,44 +28,6 @@
                         </div>
                     </template>
 
-                    <div class="module-menu-block"
-                    >
-                        <a-popover placement="bottom" @visibleChange="(visible) => {visible && renderQrCode()}">
-                            <template slot="content">
-                                <el-tabs :value="1" type='border-card' tab-position="left" stretch
-                                         style="height: 200px;">
-                                    <el-tab-pane label="移动点货(安卓)" :name="1">
-                                        <div id="qrcode1"></div>
-                                    </el-tab-pane>
-                                    <el-tab-pane label="移动点货(IOS)" :name="2">
-                                        <div id="qrcode2"></div>
-                                    </el-tab-pane>
-                                    <el-tab-pane label="移动配送(安卓)" :name="3">
-                                        <div id="qrcode3"></div>
-                                    </el-tab-pane>
-                                    <el-tab-pane label="移动配送(IOS)" :name="4">
-                                        <div id="qrcode4"></div>
-                                    </el-tab-pane>
-                                </el-tabs>
-                            </template>
-                            <template slot="title">
-                                请扫描下载点货和配送应用
-                            </template>
-                            <span> <a-icon type="mobile" theme="filled"/> 移动应用</span>
-                        </a-popover>
-                    </div>
-                    <div class="module-menu-block"
-
-                    >
-                        <a-dropdown>
-                            <span><a-icon type="question-circle" theme="filled"/> 帮助</span>
-                            <a-menu slot="overlay">
-                                <a-menu-item @click="handleHelpClick" key="quickStart">快速上手</a-menu-item>
-                                <a-menu-item @click="handleHelpClick" key="operationManual">操作手册</a-menu-item>
-                                <a-menu-item @click="handleHelpClick" key="videoTraining">视频培训</a-menu-item>
-                            </a-menu>
-                        </a-dropdown>
-                    </div>
                     <!-- 主题 -->
                     <div class="module-menu-block"
 
@@ -129,56 +91,62 @@
                             :default-openeds="defaultOpenedMenus"
                             class="newMenu"
                     >
-                        <el-submenu v-for="item in pageMenus" :index="'' + item.id" :key="item.id"
-                                    @click.native="handleMenuClick(item)"
-                        >
-                            <template slot="title">
-                                <i class="iconfont icon-dingdan" v-if="item.id=='inStockManage'"></i>
-                                <i class="iconfont icon-chanpin" v-if="item.id=='outStockManage'"></i>
-                                <i class="iconfont icon-renyuan" v-if="item.id=='OwnerManage'"></i>
-                                <a-icon type="project" v-if="item.id=='waveManage'"></a-icon>
-                                <a-icon type="ordered-list" v-if="item.id=='seedManage'"></a-icon>
-                                <a-icon type="line-chart" v-if="item.id=='storeReport'"/>
-                                <a-icon type="hdd" v-if="item.id=='inventoryCheck'"/>
-                                <i class="iconfont icon-cangkucangchu" v-if="item.id=='warehouseManage'"></i>
-                                <i class="el-icon-document" v-if="item.id=='documentManage'"></i>
-                                <i class="iconfont icon-jichushujuguanli" v-if="item.id=='BaseDataManage'"></i>
-                                <i class="iconfont icon-config" v-if="item.id=='baseInfoManage'"></i>
-                                <i class="iconfont icon-config" v-if="item.id=='sysSetting'"></i>
-                                <i class="el-icon-location-outline" v-if="item.id=='AttendanceManage'"></i>
-                                <i class="iconfont icon-icon" v-if="item.id=='serviceManage'"></i>
-                                <i class="el-icon-date" v-if="item.id=='attendance'"></i>
-                                <a-icon class="iconfont" type="reconciliation"
-                                        v-if="item.id=='warehouseOperationManage'"/>
-                                <a-icon type="printer" v-if="item.id=='printModule'"/>
-                                <a-icon type="solution" class="iconfont" v-if="item.id=='dataReport'"/>
-                                <a-icon type="team" v-if="item.id == 'adminUserManage'"/>
-                                <i class="el-icon-box" v-if="item.id=='transManager'"/>
-                                <i class="el-icon-truck" v-if="item.id == 'vehicleManage'"/>
-                                <i class="el-icon-copy-document" v-if="item.id == 'transAreaManage'"/>
-                                <a-icon type="global" v-if="item.id == 'logisticsManage'"/>
-                                <i class="el-icon-first-aid-kit" v-if="item.id == 'auditManage'"/>
-                                <i class="el-icon-tickets" v-if="item.id === 'orderManage'"/>
-                                <i class="el-icon-s-tools" v-if="item.id === 'integrateConfig'"/>
-                                <a-icon type="clock-circle" v-if="item.id=='warehousePerform'"/>
-                                <i class="el-icon-receiving" v-if="item.id === 'eorderConfig'"/>
-                                <a-icon type="pay-circle" v-if="item.id=='receivables'"/>
-                                <a-icon type="check-circle" v-if="item.id=='orderConfirm'"/>
-                                <a-icon type="apartment" v-if="item.id=='transferManger'"/>
-                                <span
-                                        slot="title"
-                                >{{(antdItems.includes(item.id)? ' ':'') +item.text}}</span>
-                            </template>
-                            <el-menu-item-group v-for="itemNav in item.navList" :key="itemNav.id"
+                        <template v-for="item in pageMenus" >
+                            <el-menu-item v-if="item.navList.length===0"  :index="'' + item.id" :key="item.id"
+                                          @click="handleMenuClick(item,item)">
+                                {{item.name}}
+                            </el-menu-item>
+                            <el-submenu v-else :index="'' + item.id" :key="item.id"
+                                        @click.native="handleMenuClick(item)"
                             >
-                                <el-menu-item :key="`${item.id}-${itemNav.id}`"
-                                              :index="item.id+'-'+itemNav.id"
-                                              @click="handleMenuClick(itemNav,item)"
-                                >{{itemNav.name}}
-                                </el-menu-item>
-                                <!-- v-if="itemNav.id!=='storeReportManager'" -->
-                            </el-menu-item-group>
-                        </el-submenu>
+                                <template slot="title">
+                                    <i class="iconfont icon-dingdan" v-if="item.id=='inStockManage'"></i>
+                                    <i class="iconfont icon-chanpin" v-if="item.id=='outStockManage'"></i>
+                                    <i class="iconfont icon-renyuan" v-if="item.id=='OwnerManage'"></i>
+                                    <a-icon type="project" v-if="item.id=='waveManage'"></a-icon>
+                                    <a-icon type="ordered-list" v-if="item.id=='seedManage'"></a-icon>
+                                    <a-icon type="line-chart" v-if="item.id=='storeReport'"/>
+                                    <a-icon type="hdd" v-if="item.id=='inventoryCheck'"/>
+                                    <i class="iconfont icon-cangkucangchu" v-if="item.id=='warehouseManage'"></i>
+                                    <i class="el-icon-document" v-if="item.id=='documentManage'"></i>
+                                    <i class="iconfont icon-jichushujuguanli" v-if="item.id=='BaseDataManage'"></i>
+                                    <i class="iconfont icon-config" v-if="item.id=='baseInfoManage'"></i>
+                                    <i class="iconfont icon-config" v-if="item.id=='sysSetting'"></i>
+                                    <i class="el-icon-location-outline" v-if="item.id=='AttendanceManage'"></i>
+                                    <i class="iconfont icon-icon" v-if="item.id=='serviceManage'"></i>
+                                    <i class="el-icon-date" v-if="item.id=='attendance'"></i>
+                                    <a-icon class="iconfont" type="reconciliation"
+                                            v-if="item.id=='warehouseOperationManage'"/>
+                                    <a-icon type="printer" v-if="item.id=='printModule'"/>
+                                    <a-icon type="solution" class="iconfont" v-if="item.id=='dataReport'"/>
+                                    <a-icon type="team" v-if="item.id == 'adminUserManage'"/>
+                                    <i class="el-icon-box" v-if="item.id=='transManager'"/>
+                                    <i class="el-icon-truck" v-if="item.id == 'vehicleManage'"/>
+                                    <i class="el-icon-copy-document" v-if="item.id == 'transAreaManage'"/>
+                                    <a-icon type="global" v-if="item.id == 'logisticsManage'"/>
+                                    <i class="el-icon-first-aid-kit" v-if="item.id == 'auditManage'"/>
+                                    <i class="el-icon-tickets" v-if="item.id === 'orderManage'"/>
+                                    <i class="el-icon-s-tools" v-if="item.id === 'integrateConfig'"/>
+                                    <a-icon type="clock-circle" v-if="item.id=='warehousePerform'"/>
+                                    <i class="el-icon-receiving" v-if="item.id === 'eorderConfig'"/>
+                                    <a-icon type="pay-circle" v-if="item.id=='receivables'"/>
+                                    <a-icon type="check-circle" v-if="item.id=='orderConfirm'"/>
+                                    <a-icon type="apartment" v-if="item.id=='transferManger'"/>
+                                    <span
+                                            slot="title"
+                                    >{{(antdItems.includes(item.id)? ' ':'') +item.text}}</span>
+                                </template>
+                                <el-menu-item-group v-for="itemNav in item.navList" :key="itemNav.id"
+                                >
+                                    <el-menu-item :key="`${item.id}-${itemNav.id}`"
+                                                  :index="item.id+'-'+itemNav.id"
+                                                  @click="handleMenuClick(itemNav,item)"
+                                    >{{itemNav.name}}
+                                    </el-menu-item>
+                                    <!-- v-if="itemNav.id!=='storeReportManager'" -->
+                                </el-menu-item-group>
+                            </el-submenu>
+                        </template>
                     </el-menu>
                 </el-aside>
                 <el-main :class="asideCollapse?'main-contents-expand':'main-contents-shrink'">
@@ -216,10 +184,6 @@
                 :closable='false'
                 destroyOnClose
         >
-            <!--            <changePassword-->
-            <!--               @changeSuccess='changeSuccess' -->
-            <!--               @cancle='cancle'-->
-            <!--            ></changePassword>-->
         </a-modal>
         <vstyle>
             <!-- 顶部header样式覆盖 -->
@@ -364,6 +328,7 @@
     import theme from '../assets/css/theme.js'
     import {menu} from '../mock/menu.js'
     // import changePassword from './setting/changePassword'
+    import swal from 'sweetalert';
 
 
     const antdItems = ['waveManage', 'seedManage', 'storeReport', 'inventoryCheck', 'printModule', 'adminUserManage', 'logisticsManage', 'warehousePerform', 'receivables', 'orderConfirm', 'transferManger']
@@ -380,15 +345,15 @@
         },
         {
             icon: 'fund',
-            title: '数据收集',
+            title: '我的工具',
             menus: menuGroups.storeReports
         },
-        {
-            icon: 'setting',
-            title: '系统设置',
-            menus: menuGroups.sysSettings
-        }
-    ]
+        // {
+        //     icon: 'setting',
+        //     title: '系统设置',
+        //     menus: menuGroups.sysSettings
+        // }
+    ];
 
     export default {
         name: "homepage",
@@ -491,14 +456,15 @@
                     this.curIndex = 0
                 }
                 const curModule = this.roleModules[this.curIndex]
-                if (!curModule) {
+                if (!curModule || curModule.menus.length===0) {
                     return []
                 }
                 const menuNames = curModule.menus.map(it => it.name)
-                return this.roleList.filter(it => it.navList && it.navList.some(nav => {
-                    let navArr = nav.id.split('/')
-                    return menuNames.includes(navArr[0])
-                }))
+                return this.roleList.filter(it => menuNames.includes(it.id) || (it.navList && it.navList.some(nav => {
+                        let navArr = nav.id.split('/')
+                        return menuNames.includes(navArr[0])
+                    }))
+                )
             },
             ...mapState('user', [
                 'token',
@@ -635,7 +601,8 @@
                 this.currentTheme = theme.themeData
             },
             selectModule(index) {
-                this.curIndex = index
+                this.curIndex = index;
+                this.pageMenus();
             },
             renderQrCode() {
                 if (!this.rfQrCoder) {
@@ -677,11 +644,16 @@
                 this.asideCollapse = true;
             },
             logOut() {
+                swal({
+                    icon: "success",
+                    text: "正在退出!",
+                    button: false,
+                    timer: 1000,
+                });
                 this.clearUser();
             },
             clearUser(){
                 clearCookie({}).then(()=>{
-                    this.logout()
                     this.$router.push({name: 'login'});
                 }).catch(e => {
                     this.$message.error(e)
@@ -818,7 +790,7 @@
                     router = this.$router.options.routes.find(it => it.name === itemNav.id)
                 }
                 //还没有，则什么都不做（实际上更好的方式是打开404页面）
-                if (!router) return
+                if (!router) return;
                 //判断该页面是不是需要在新窗口中打开，如果是，则打开新窗口并结束逻辑
                 if (router.meta.windowOpen) {
                     const {href} = this.$router.resolve({
@@ -882,7 +854,7 @@
             // //获取菜单接口
             changeRole(selectRole) {
                 if (selectRole === 'exit') {
-                    this.logOut()
+                    this.logOut();
                     return;
                 }
                 if (selectRole === 'changePassword') {
@@ -896,14 +868,14 @@
                 // this.menuLoading = true
                 this.oriOrg = selectRole
                 //2.vuex修改，切换到新角色
-                const {orgId, warehouseId} = selectRole;
-                const itemNav1 = {name: '用户信息', id: 'manageState'}
-                const item1 = {name: '用户信息', id: 'workbench'}
+                // const {orgId, warehouseId} = selectRole;
+                const itemNav1 = {name: '工作状态', id: 'manageState'}
+                const item1 = {name: '工作状态', id: 'manageState'}
                 this.handleMenuClick(itemNav1,item1)
-
-                const itemNav = {name: '工作看板', id: 'myWorkbench'}
-                const item = {name: '用户信息', id: 'workbench'}
-                this.handleMenuClick(itemNav,item)
+                //
+                // const itemNav = {name: '工作看板', id: 'myWorkbench'}
+                // const item = {name: '用户信息', id: 'workbench'}
+                // this.handleMenuClick(itemNav,item)
                 if(!this.userInfo||!this.userInfo.userLoginAuth){
                     return
                 }

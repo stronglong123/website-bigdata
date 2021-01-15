@@ -1,28 +1,15 @@
 <template>
     <div>
-        <a-card title="新增表">
+        <a-card title="文本替换">
             <a-form class="ant-advanced-search-form" :form="form">
-                <a-row type="flex" :gutter="10">
-                    <a-col :span="6">
+                <a-row type="flex" :gutter="24">
+                    <a-col :span="24">
                         <a-form-item
-                                label="表名"
-                                :label-col="{ span: 8 }"
-                                :wrapper-col="{ span: 16 }"
+                                label="源文本"
+                                :label-col="{ span: 6 }"
+                                :wrapper-col="{ span: 18 }"
                         >
-                            <a-input
-                                    v-decorator="['tableName',{rules:[{required:true,message:'表名不能为空'}]}]"
-                                    placeholder="请填写"
-                            ></a-input>
-                        </a-form-item>
-                    </a-col>
-
-                    <a-col :span="6">
-                        <a-form-item
-                                label="表描述"
-                                :label-col="{ span: 8 }"
-                                :wrapper-col="{ span: 16 }"
-                        >
-                            <a-input v-decorator="['tableComment']" placeholder="请填写"></a-input>
+                            <a-textarea v-decorator="['data']" placeholder="请填写"></a-textarea>
                         </a-form-item>
                     </a-col>
                 </a-row>
@@ -30,7 +17,7 @@
         </a-card>
 
         <!-- SKU明细 -->
-        <a-card title="字段信息">
+        <a-card title="替换信息">
             <el-row :gutter="10" style="margin-bottom:10px;">
                 <el-col :span="14">
                     <el-button
@@ -53,83 +40,32 @@
             >
                 <el-table-column type="selection" width="55"></el-table-column>
                 <el-table-column type="index" label="序号"></el-table-column>
-                <el-table-column property="columnName" label="字段名" width="170">
+
+                <el-table-column property="oldParam" label="默认值" width="200">
                     <template slot-scope="prop">
                         <a-input
                                 size="small"
-                                v-model="prop.row.columnName"
+                                v-model="prop.row.oldParam"
                                 v-if="prop.row.editable"
                                 style="width: 100%"
                         >
                         </a-input>
-                        <template v-if="prop.row.columnName && !prop.row.editable">
-                            <div>{{prop.row.columnName}}</div>
+                        <template v-if="prop.row.oldParam && !prop.row.editable">
+                            <div>{{prop.row.oldParam}}</div>
                         </template>
                     </template>
                 </el-table-column>
-                <el-table-column property="type" label="字段属性" width="170">
-                    <template slot-scope="prop">
-                        <a-select
-                                v-if="prop.row.editable"
-                                size="small"
-                                allowClear
-                                placeholder="请选择"
-                                :defaultActiveFirstOption="false"
-                                :showArrow="true"
-                                :filterOption="false"
-                                v-model="prop.row.type"
-                                :options="typeOptions"
-                                style="width:100%;"
-                        />
-                        <template v-if="prop.row.type && !prop.row.editable">
-                            <div>{{prop.row.type}}</div>
-                        </template>
-                    </template>
-                </el-table-column>
-                <el-table-column property="isNull" label="是否非空" width="170">
-                    <template slot-scope="prop">
-                        <a-select
-                                v-if="prop.row.editable"
-                                v-model="prop.row.isNull"
-                                size="small"
-                                allowClear
-                                placeholder="请选择"
-                                :defaultActiveFirstOption="false"
-                                :showArrow="true"
-                                :filterOption="false"
-                                :options="nullOptions"
-                                style="width:100%;"
-                        />
-                        <template v-if="prop.row.isNull && !prop.row.editable">
-                            <div>{{prop.row.isNull}}</div>
-                        </template>
-                    </template>
-                </el-table-column>
-                <el-table-column property="defaultValue" label="默认值" width="170">
+                <el-table-column property="newParam" label="描述" width="200">
                     <template slot-scope="prop">
                         <a-input
                                 size="small"
-                                v-model="prop.row.defaultValue"
+                                v-model="prop.row.newParam"
                                 v-if="prop.row.editable"
                                 style="width: 100%"
                         >
                         </a-input>
-                        <template v-if="prop.row.defaultValue && !prop.row.editable">
-                            <div>{{prop.row.defaultValue}}</div>
-                        </template>
-                    </template>
-                </el-table-column>
-                <el-table-column property="comment" label="描述" width="170">
-                    <template slot-scope="prop">
-                        <a-input
-                                size="small"
-                                v-model="prop.row.comment"
-                                v-if="prop.row.editable"
-                                style="width: 100%"
-                        >
-                        </a-input>
-                        <template v-if="prop.row.comment && !prop.row.editable">
-                            <div>{{prop.row.comment}}</div>
+                        <template v-if="prop.row.newParam && !prop.row.editable">
+                            <div>{{prop.row.newParam}}</div>
                         </template>
                     </template>
                 </el-table-column>
@@ -158,7 +94,6 @@
         <buttonGroup>
             <div slot="button">
                 <el-button size="medium" type="primary" @click="submitOrder">提交</el-button>
-                <el-button size="medium" @click="back">保存</el-button>
                 <el-button size="medium" @click="back">返回</el-button>
             </div>
         </buttonGroup>
@@ -167,25 +102,17 @@
 
 
 <script>
-    import {createTable} from "api/tableManger";
+    import {multipleReplace} from "api/utilManager";
     import buttonGroup from "components/buttonGroup/buttonGroup";
     import swal from 'sweetalert';
 
     export default {
-        name: "tableList",
+        name: "utilManager",
         data() {
             return {
                 form: this.$form.createForm(this),
                 tableInfoList: [],
                 selectedRows: [],
-                typeOptions: [{value: 'VARCHAR', label: '字符串'},
-                    {value: 'BOOLEAN', label: '布尔'},
-                    {value: 'TINYINT', label: '短数值'},
-                    {value: 'INTEGER', label: '数值'},
-                    {value: 'BIGINT', label: '序列'},
-                    {value: 'DATE', label: '时间日期'},
-                ],
-                nullOptions: [{value: 'TRUE', label: '是'}, {value: 'FALSE', label: '否'}],
             }
         },
         components: {
@@ -198,33 +125,18 @@
                 this.form.validateFields((error, values) => {
                     if (!error) {
                         if (this.tableInfoList.length === 0) {
-                            this.$message.info("表字段不能为空");
+                            this.$message.info("替换信息不能为空");
                             return;
                         }
                         if (this.tableInfoList.some(it => it.editable)) {
                             this.$message.info("请先保存所有表字段信息");
                             return;
                         }
-                        let params = [];
-                        this.tableInfoList.forEach(it => {
-                            params.push({
-                                tableName: values.tableName,
-                                tableComment: values.tableComment,
-                                columnName: it.columnName,
-                                type: it.type,
-                                isNull: it.isNull,
-                                defaultValue: it.defaultValue,
-                                comment: it.comment,
-                            });
-                        });
-                        createTable(params).then(data => {
-                            // this.$alert(data[0], '表结构', {
-                            //     confirmButtonText: '确定',
-                            //     center: true
-                            // });
+                        values.replaceList =  this.tableInfoList;
+                        multipleReplace(values).then(data => {
                             swal({
-                                title:'表结构',
-                                text:data[0],
+                                title:'替换后信息',
+                                text:data,
                                 button: false,
                             })
                             // this.back();
@@ -262,12 +174,8 @@
                 this.$router.go(-1);
             },
             confirm(row) {
-                if (!row.columnName) {
+                if (!row.oldParam) {
                     this.$message.info("请先填写字段名");
-                    return;
-                }
-                if (!row.type) {
-                    this.$message.info("请先选择字段属性");
                     return;
                 }
                 row.editable = false;

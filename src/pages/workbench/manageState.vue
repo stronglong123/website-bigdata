@@ -27,6 +27,9 @@
                 <!-- <el-col :span="12"></el-col> -->
             </el-row>
         </a-card>
+        <a-card title="任务看板">
+            <draggable></draggable>
+        </a-card>
         <a-card title="常用菜单 / 便捷导航">
             <span v-if="originMenu.length===0">暂无可用菜单</span>
             <div v-else class="menuContain">
@@ -71,6 +74,8 @@ import moment from "moment";
 import { mapState } from "vuex";
 import { getMemuList } from "api/loginApi";
 import Bus from "@/components/eventBus/eventBus.js";
+import draggable from "@/components/draggable/commonDraggable";
+
 
 // 当前常用菜单
 // 可以选择添加
@@ -81,6 +86,8 @@ const allowVisitMenu = [
     "accountSetting",
     "servicerManage"
 ];
+
+
 export default {
     data() {
         return {
@@ -107,8 +114,13 @@ export default {
                     key: "videoTraining"
                 }
             ],
-            isCustomer:false
+            isCustomer:false,
+
+
         };
+    },
+    components: {
+        draggable
     },
     mounted() {
         this.getUsualMenu(this.choosenOrg,this.choosenWarehouse)
@@ -123,7 +135,7 @@ export default {
         },
         choosenWarehouse(warehouse) {
             this.getUsualMenu(this.choosenOrg,warehouse)
-        }
+        },
     },
     computed: {
         greetings() {
@@ -363,4 +375,5 @@ export default {
         margin: 8px 0;
     }
 }
+
 </style>

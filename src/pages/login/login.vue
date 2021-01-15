@@ -58,6 +58,7 @@
     // import {getcaptchaApi, getValidate} from "api/loginApi";
     // import "../../assets/gt/gt";
     import moment from "moment";
+    import swal from 'sweetalert';
 
     export default {
         name: "login",
@@ -123,38 +124,6 @@
                 return true;
             },
             clickLogin() {
-                let user= {
-                    "businessId": "0",
-                    "employeeType": 1,
-                    "longtime": true,
-                    "mobileNo": "15671669918",
-                    "orgId": 0,
-                    "trueName": "测试",
-                    "userId": 117020,
-                    "userLoginAuth": [
-                        {
-                            "orgId": 413,
-                            "orgName": "测试",
-                            "orgType": 2,
-                            "roleCodes": [
-                                {
-                                    "code": "WarehouseOperative",
-                                    "copId": "1",
-                                    "createTime": 1575216000000,
-                                    "global": true,
-                                    "grantOrgType": 3,
-                                    "id": "1013",
-                                    "lastUpdateTime": 1583424000000,
-                                    "name": "仓配运营",
-                                    "pid": "0"
-                                }
-                            ],
-                            "warehouseId": 4131
-                        }
-                    ],
-                    "userName": "测试",
-                    "usertoken": "726509d0-cf1d-4d39-b051-fae2b76642df"
-                }
                 this.fullscreenLoading = true;
                 this.login({
                     userName: this.account,
@@ -178,6 +147,12 @@
                             localStorage.removeItem("account");
                         }
                         this.$router.replace({name: "homepage"});
+                        swal({
+                            icon: "success",
+                            text: data.trueName + "，欢迎登录!",
+                            button: false,
+                            timer: 2000,
+                        });
                     })
                     .catch(err => {
                         // captchaObj.reset();
