@@ -58,8 +58,8 @@ const schema = {
             text:'编辑',
         },
         {
-            type:'detail',
-            text:'详情'
+            type:'delete',
+            text:'删除'
         },
     ]
 }

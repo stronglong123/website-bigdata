@@ -1,5 +1,5 @@
 const path = require('path')
-const devServer = 'http://localhost:8199/'
+const devServer = 'http://localhost:8299/'
 // const devServer = 'http://81.70.157.85:8199/'
 function resolve(dir) {
     return path.join(__dirname, dir)
@@ -19,6 +19,18 @@ module.exports = {
         }
     },
     productionSourceMap: false,
+    chainWebpack: (config) => {
+        config.plugins.delete('prefetch')
+        /* 添加分析工具 */
+        if (process.env.NODE_ENV === 'production') {
+            config
+                .plugin('webpack-bundle-analyzer')
+                .use(require('webpack-bundle-analyzer').BundleAnalyzerPlugin)
+                .end()
+            config.plugins.delete('prefetch')
+        } else {
+        }
+    },
 
     configureWebpack: config => {
         config.resolve = {

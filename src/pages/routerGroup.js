@@ -4,7 +4,7 @@ import projectRouter from "../router/projectManager/projectRouter";
 import workbenchRouter from '../router/workbench/workbenchRouter'
 import utilRouter from '../router/utilManager/utilRouter'
 import questionBankRouter from '../router/questionBank/questionBankRouter'
-import dictionaryRouter from '../router/ dictionary/dictionaryRouter'
+import dictionaryRouter from '../router/dictionary/dictionaryRouter'
 
 const menuGroups = {
     myWorks:[

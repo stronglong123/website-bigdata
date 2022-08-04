@@ -14,6 +14,7 @@
                 @cancel="visible = false"
                 :maskClosable="false"
                 :destroyOnClose="true"
+                width='50vw'
         >
             <simple-form
                     :formSchema="formSchema"
@@ -33,7 +34,7 @@
     import Bus from 'components/eventBus/eventBus'
     import formSchema from './formSchema'
     const uploadTables = '/aipservice/import/importTable'
-    import {pageList,insert,update} from 'api/questionBankApi'
+    import {pageList,insert,update,deleteData} from 'api/questionBankApi'
     import simpleForm from 'components/forms/simpleForm'
     import moment from "moment";
 
@@ -92,6 +93,13 @@
                     this.visible = true;
                     this.formData = data;
                 }
+                if (type == 'delete') {
+                    this.$confirm('是否删除?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning',
+                    }).then(()=>deleteData({id:data.id}));
+                }
             },
             handleClose() {
                 this.visible = false;
@@ -107,6 +115,7 @@
                 this.doSearch(this.searchParams)
             },
             createData(data){
+                data.id=null;
                 insert(data).then(data => {
                     this.$message('操作成功')
                     this.visible = false
@@ -118,6 +127,15 @@
 
             updateData(params){
                 update(params).then(data => {
+                    this.$message(`操作成功`);
+                }).catch(e => {
+                        this.$message(`操作不成功，原因:${e}`)
+                    }
+                )
+            },
+
+            deleteData(params){
+                deleteData(params).then(data => {
                     this.$message(`操作成功`);
                 }).catch(e => {
                         this.$message(`操作不成功，原因:${e}`)
